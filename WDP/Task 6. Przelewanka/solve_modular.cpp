@@ -68,7 +68,6 @@ bool CheckGcdConstraints(int n, const Cups& x, const Cups& y) {
   return true;  // Warunek spełniony
 }
 
-// Główna logika przeszukiwania wszerz
 void SolveBfs(int n, const Cups& x, const Cups& y) {
   /*
   stan:=
@@ -178,7 +177,7 @@ signed main() {
   if (CheckTrivialCases(n, x, y) || !CheckGcdConstraints(n, x, y)) 
     return 0;
 
-  // 3. Uruchomienie właściwego algorytmu
+  // 2. Uruchomienie właściwego algorytmu
   SolveBfs(n, x, y);
 
   return 0;
