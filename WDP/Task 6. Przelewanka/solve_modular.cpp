@@ -82,7 +82,7 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
   int moves = 0;
 
   // Funkcja pomocnicza do sprawdzania stanów
-  auto TryVisit = [&](const Cups& move) -> bool {
+  auto TryToVisit = [&](const Cups& move) -> bool {
     // visited.insert zwraca {iterator, bool inserted}
     // jezeli inserted jest true, to znaczy ze wczesniej nie odwiedzilismy
     if (visited.insert(move).second) {
@@ -114,7 +114,7 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
         // WYLEJ
         if (water_level > 0) {
           move[i] = 0;
-          if (TryVisit(move)) {
+          if (TryToVisit(move)) {
             q2.push(move);
           }
           move[i] = water_level;  // cofnij zmianę
@@ -123,7 +123,7 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
         // WYPELNIJ
         if (water_level < x[i]) {
           move[i] = x[i];
-          if (TryVisit(move)) {
+          if (TryToVisit(move)) {
             q2.push(move);
           }
           move[i] = water_level;
@@ -137,7 +137,7 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
           // nie moge przelac wiecej niz mój akt. poziom wody
           move[i] -= delta;
           move[j] += delta;
-          if (TryVisit(move)) {
+          if (TryToVisit(move)) {
             q2.push(move);
           }
           // cofamy zmiany
@@ -149,7 +149,7 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
           delta = min(move[j], x[i] - move[i]);
           move[i] += delta;
           move[j] -= delta;
-          if (TryVisit(move)) {
+          if (TryToVisit(move)) {
             q2.push(move);
           }
           move[i] -= delta;
