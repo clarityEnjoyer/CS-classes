@@ -13,7 +13,6 @@ struct VectorHash {
   size_t operator()(const vector<int>& vec) const {
     size_t seed = vec.size();
     for (auto& x : vec) {
-      // Cast to unsigned for bitwise magic to work safely
       uint32_t v = (uint32_t)x;
       v = ((v >> 16) ^ v) * 0x45d9f3b;
       v = ((v >> 16) ^ v) * 0x45d9f3b;
@@ -84,8 +83,8 @@ void SolveBfs(int n, const Cups& x, const Cups& y) {
 
   // Funkcja pomocnicza do sprawdzania stanów
   auto TryVisit = [&](const Cups& move) -> bool {
-    // visited.insert returns {iterator, bool inserted}
-    // If inserted is true, it means it wasn't there before
+    // visited.insert zwraca {iterator, bool inserted}
+    // jezeli inserted jest true, to znaczy ze wczesniej nie odwiedzilismy
     if (visited.insert(move).second) {
       if (move == y) {   // to jest poszukiwany stan
         cout << moves;
