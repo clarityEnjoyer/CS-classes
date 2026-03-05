@@ -1,0 +1,6 @@
+--fromMaybe :: a -> Maybe a-> a
+fromMaybe a Nothing = a 
+fromMaybe _ ( Just y ) = y
+
+--pattern matching
+
