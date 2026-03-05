@@ -5,3 +5,6 @@ jest sort bashowy, ktory sortuje linie (i domyslnie po znakach). sort -c == only
 
 ./ wskazuje ze chcemy uruchomic program z AKTUALNEGO katalogu
 
+co do cwiczen:
+czekuj czy liczba parametrow sie zgadza..
+
