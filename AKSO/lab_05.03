@@ -1,0 +1,7 @@
+$? zmienna specjalna ktora pamieta kod zakonczenia ostatniego programu
+jest sort bashowy, ktory sortuje linie (i domyslnie po znakach). sort -c == only check if sorted. -n == numeric
+
+/dev/null zjada wszystkie znaki do niego wysylane
+
+./ wskazuje ze chcemy uruchomic program z AKTUALNEGO katalogu
+
