@@ -1,2 +1,20 @@
 wielokrotne tworzenie klasy rand jest bledem
 
+unkamy magicznych stalych 
+MOZEMY robic refaktoryzacje: zaznaczamy sobie cos. kklikamy prawym. i wybieramy REFACTOR
+
+formalnie nalezy zawsze konczyc wypisywanie znakiem konca wiersza \n. inaczej formalnie ten ciag znakow to nie jest tekst
+->dodajemy System.out.println();
+
+np 
+if (b) s = "Orzel";
+.......
+tu "Orzel" jest magiczną wartoscią. Nalezy zrefaktowryzowac do stalej!
+public static final String ORZEL = "Orzel";
+
+mozna tez ekstraktowac metody - na tej samej zasadzie
+
+
+
+
+
