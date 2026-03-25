@@ -9,7 +9,7 @@ formalnie nalezy zawsze konczyc wypisywanie znakiem konca wiersza \n. inaczej fo
 np 
 if (b) s = "Orzel";
 .......
-tu "Orzel" jest magiczną wartoscią. Nalezy zrefaktowryzowac do stalej!
+tu "Orzel" jest magiczną wartoscią. Nalezy zrefaktowryzowac do stalej! ctrl + alt + C
 public static final String ORZEL = "Orzel";
 
 mozna tez ekstraktowac metody - na tej samej zasadzie
