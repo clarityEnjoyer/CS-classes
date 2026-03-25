@@ -26,4 +26,6 @@ for (int i = 0; i < SORTOWANIA; i++){
   a[i] = new int [n];
 }
 
+mamy pisząc pd dynamicznie powiekszac rozmier tablicy (erase, copoyOf), podobnie jak w wektorze 
+kolejno dopiujemy liczby piersze do tabliczki 
 
