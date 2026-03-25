@@ -14,7 +14,16 @@ public static final String ORZEL = "Orzel";
 
 mozna tez ekstraktowac metody - na tej samej zasadzie
 
+wszedzie tam gdzie w javie mamy tablicy albo obiekty, pod spodem tak naprawde są wskazniki. 
+tablica dwuwymiarowa to tak naprawde jednowymiarowa tablica wskaznikow na tablice
 
+int [][] a = new int [SORTOWANIA][n]; ///tworzy SORTOWANIA + 1 tablic
 
+jest tozsame z:
+
+int[][] a = new int[SORTOWANIA][];
+for (int i = 0; i < SORTOWANIA; i++){
+  a[i] = new int [n];
+}
 
 
