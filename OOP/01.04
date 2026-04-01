@@ -1,0 +1,31 @@
+nalezy poisac wlasnego toStringa raczej wczesnie - do debug/wydruk kontrolny
+
+mozna latwo wstawic maina piszac pierwsze cztery litery - psvm
+
+@Override
+    public String toString() {
+        return name + " " + surname + ", " + position;
+    }
+Pracownik guy = new Pracownik("Alehandro", "Lopez", "S-icario");
+        System.out.println(guy);
+
+warto zauwazyc ze to juz samo systemowo uzywa tego toString'a
+
+    Pracownik (String name, String surname, String position){
+        this.name = name;
+        this.surname = surname;
+        this.position = position;
+    }
+    Pracownik (String name, String surname){
+        this(name, surname, "worker");
+    }
+
+pierwszy kkonstruktor jest glowny, nastepne zas z niego koryzstają - są pomocnicze
+
+nie uzywamy "\n" tylko System.lineSeparator()
+
+stringBuilder - sprytne narzedzie do liniowego budowania napisow. mamy tam append za pom. ktorego doklejamy kolejne rzeczy.
+na koniec mam po prostu .toString() i essa
+
+algorytm sie nie zmienia, jedynie np format danych - stąd decyzja o wyciagnieciu 'czytaj' do oddzielnej klasy Czytnik; tak, aby nie trzeba bylo modyfikowac klasy Main.
+\
