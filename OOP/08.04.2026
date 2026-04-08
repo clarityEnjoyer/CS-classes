@@ -9,3 +9,13 @@ nie można stworzyć ich obiektu!
 
 sens jest by dziedziczyć po klasach abstrakcyjnych.
 możemy stworzyć metody abstrakcyjne 
+
+Nasz kod powinien jawnie ujawniac nasze zamiary. nie powinnismy uzywac sprytnych rzeczy(!)
+nawet jeszcze bardziej wprost nizby sie chialo i wydawalo! serio..
+
+jak do kostruktora jakis obiekt przekazujemy i potem do this przypisujemy do moze byc subtelny blad taki ze ja przypisze referencje do tego obiektu, a wiec ten co 
+wywolal konstruktor bedzie mogl modyfikowac ten przekazany obiekt (teraz tez w srodku mnie) bez mojej wiedzy!
+rozwiazaniem jest kopiowanie...
+
+kolejne zadanie zaliczeniowe:
+wartosciowanie zmienych trzymac jako tablica, tj w tablicy...  
