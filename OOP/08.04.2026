@@ -1,0 +1,11 @@
+jak Pan Jabłonowski zwrócił uwagę, zaiste piękna data!
+super nie jest po prostu odwołaniem się do nadklasy intuicyjnie... patrzy tekstowo
+dlatego trzeba go dziedziczyć ostrożnie!
+mam klasę Bo co dziedziczy po A. ma metodę Z co się odwołuje do super
+jak odziedziczyłem tę metodę w C, to wywołując tamto super z X wskaże na A!
+
+Klasy abstrakcyjne używane do wyabstrahowania wspólnych cech wielu klas; zapewnienia wspólnego "interfejsu", zestawu implementacji... np widgety 
+nie można stworzyć ich obiektu!
+
+sens jest by dziedziczyć po klasach abstrakcyjnych.
+możemy stworzyć metody abstrakcyjne 
