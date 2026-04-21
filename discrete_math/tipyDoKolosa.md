@@ -7,3 +7,5 @@
 
   -iteracja w sumie po jakims i: mozna interpretować jako jakiś rozmiar czegoś, ale też np kolejno wyróżniony element! no bo elementów jest n, a moge je zawsze sobie jakos nazwac
 
+-sztuczka z podstawieniem ze wzoru na pochlanianie. == odwiązanie zmiennej
+zero do zerowej to *1*
