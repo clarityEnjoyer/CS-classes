@@ -3,3 +3,4 @@
 - jesli mam pochodną st n, to mogę nie pomijac pocz. n wyrazów w sumie, bo i tak będą zjedzone!
 
 - (k+1) do potęgi ubywającej k, to po prostu k!
+2:18b) sexy af
