@@ -3,4 +3,7 @@
 - jesli mam pochodną st n, to mogę nie pomijac pocz. n wyrazów w sumie, bo i tak będą zjedzone!
 
 - (k+1) do potęgi ubywającej k, to po prostu k!
-2:18b) sexy af
+-2:18b) sexy af
+
+  -iteracja w sumie po jakims i: mozna interpretować jako jakiś rozmiar czegoś, ale też np kolejno wyróżniony element! no bo elementów jest n, a moge je zawsze sobie jakos nazwac
+
