@@ -10,3 +10,8 @@
 - sztuczka z podstawieniem ze wzoru na pochlanianie. **== odwiązanie zmiennej** 
 
 - zero do zerowej to *1*
+
+### Skup się. Walić jakąś pychę i obliczenia w głowie!
+Twoim zadaniem nie jest zabawa, tylko rozmasowanie zadania. Masz mieć jego precyzyjny model, przed tym nawet nie uważaj, że coś zrobiłeś!
+
+| Nazwij ciąg logiczny swoich decyzji. Serio.
