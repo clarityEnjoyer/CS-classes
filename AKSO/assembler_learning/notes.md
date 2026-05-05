@@ -1,0 +1,3 @@
+Argumenty funkcji przekazuje się kolejno w rejestrach rdi, rsi, rdx, rcx, r8 i r9. 
+Jeśli jest ich więcej, to kolejne umieszcza się na stosie, a stos czyści funkcja wołająca. Jeśli funkcja zmieni wartość któregoś z rejestrów rbx, rsp, rbp i r12 do r15, musi przywrócić jego wartość, jaka była przy wchodzeniu do funkcji (tuż po wykonaniu rozkazu call). Wartość funkcji znajdzie się zwykle w rejestrze rax lub w parze rejestrów rax i rdx. Przy wchodzeniu do funkcji, przed wykonaniem rozkazu call, wartość wskaźnika stosu musi być podzielna przez 16. Znacznik kierunku zliczania DF w rejestrze rflags musi być wyzerowany (ustawione zwiększanie) przy wchodzeniu i opuszczaniu funkcji. 
+Wartości innych znaczników użytkownika w rejestrze rflags nie są zachowywane przez funkcje. 
