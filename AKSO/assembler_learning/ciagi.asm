@@ -172,7 +172,7 @@ arithmetic_sequence:
     ; Propaguję przeniesienie i uwzględniam rozszerzenie znaku A0.
     adc rsi, r11 
     mov rax, rsi        ; nasze 'lo' jest gotowe     
-    ; Propaguję przeniesienie i uwzględniam rozszerzenie znaku A0 oraz iloczynu
+    ; Propaguję przeniesienie i uwzględniam rozszerzenie znaku A0 oraz iloczynu.
     adc rdx, r11        ; nasze 'hi' jest gotowe
 
     ret
