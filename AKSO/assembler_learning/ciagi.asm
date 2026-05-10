@@ -158,21 +158,21 @@ arithmetic_sequence:
     mov r11, [rdi + r10*8 - 8]
     sar r11, 63         ; r11 := rozszerzenie znaku 
     mov rdx, rsi        ; n+1. slowo iloczynu
-    sar rdx, 63         ; rozszerzam jego znak jako słowo n+2
+    sar rdx, 63         ; Rozszerzam jego znak jako słowo n+2
     ; Na początku dodawania przeniesienie = 0
     clc                 ; CF := 0
 
 .addition_loop:
     mov rax, [rdi]      ; rax := A0[i]
     adc [r9], rax       ; Ak[i] := Ak[i] + A0[i] + przeniesienie 
-    lea rdi, [rdi + 8]  ; inkrementuję wskazniki
+    lea rdi, [rdi + 8]  ; Inkrementuję wskazniki
     lea r9,  [r9 + 8]
     loop .addition_loop
-    
+
     ; Propaguję przeniesienie i uwzględniam rozszerzenie znaku A0.
     adc rsi, r11 
-    mov rax, rsi        ; nasze 'lo' jest gotowe     
+    mov rax, rsi        ; 'lo' jest gotowe     
     ; Propaguję przeniesienie i uwzględniam rozszerzenie znaku A0 oraz iloczynu.
-    adc rdx, r11        ; nasze 'hi' jest gotowe
+    adc rdx, r11        ; 'hi' jest gotowe
 
     ret
