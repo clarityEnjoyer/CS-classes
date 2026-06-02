@@ -1,0 +1,39 @@
+om x = x x
+main = om om
+
+------------------------------------------------------------
+{-
+om x = x x
+main = om om
+------------------------------------------------------------
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+om om
+-}

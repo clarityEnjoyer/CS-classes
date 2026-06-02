@@ -1,0 +1,6 @@
+
+inf = S inf
+
+add Z n = n
+add (S m) n = S(add m n)
+main = add inf Z

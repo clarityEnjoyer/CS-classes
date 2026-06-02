@@ -1,0 +1,11 @@
+-- data Nat = Z | S Nat
+-- data Bool = False | True
+
+equal Z Z = True
+equal (S x) (S y) = equal x y
+equal x y = False
+
+one = S Z
+two = S one
+
+main = equal one two

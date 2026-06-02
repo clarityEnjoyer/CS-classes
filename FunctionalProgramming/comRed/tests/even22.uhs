@@ -1,0 +1,14 @@
+-- data Nat = Z | S Nat
+-- data Bool = False | True
+
+even Z = True
+even (S (S x)) = even x
+even x = False
+
+two = S (S Z)
+
+add Z n = n
+add (S m) n = S(add m n)
+-- main = add (S (S Z)) two
+main = even(add two two)
+

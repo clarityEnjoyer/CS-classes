@@ -1,0 +1,1 @@
+cabal run zadanie3 -- tests/$1.uhs

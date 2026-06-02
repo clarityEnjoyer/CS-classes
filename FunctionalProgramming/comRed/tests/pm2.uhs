@@ -1,0 +1,5 @@
+
+f A = X
+f B = Y
+
+main = f B

@@ -1,0 +1,5 @@
+f (S x) A = F v
+f (S x) d = G
+val = S sub
+sub = Z 
+main = f val B
