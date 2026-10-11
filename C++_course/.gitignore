@@ -1,0 +1,18 @@
+# Compiled binaries and objects
+medals
+*.o
+*.out
+*.exe
+*.a
+*.so
+
+# Debugging and profiling
+*.dSYM/
+gmon.out
+
+# Editor and IDE configurations
+.vscode/
+.idea/
+*.swp
+*~
+
