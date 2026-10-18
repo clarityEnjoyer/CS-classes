@@ -26,23 +26,54 @@
     
     Wyjątkiem jest ostatnia linia w danych wejściowych. 
     Jeśli nie kończy się znakiem nowej linii, jest to poprawna linia.
+
+    Dwa ciągi słów oznaczają te same zawody, jeśli są to takie same ciągi słów. 
+    Odstępów między słowami nie porównujemy !!!
+
 */
 
+#include <cstddef>
 #include <iostream>
 #include <string_view>
+#include <regex>
 
 using namespace std; // TO BE DELETED
 
-const string ODSTEP = " \t";   
+const string WHITESPACE = " \t";   
 
-void trimLine(string_view &line){
-    line.remove_prefix(line.find_first_not_of(ODSTEP));
+inline void communicateError(int &lineNum) {
+    cerr << "ERROR " << lineNum << '\n';
+}
+
+inline void trimLine(string_view &line) {
+    line.remove_prefix(line.find_first_not_of(WHITESPACE));
     // Notice: if a line contains only whitespace, then it won't get trimmed.
 }
 
-void processLine(string_view line, bool isLastLine, int lineNum){
+inline void standarizeEventName(string &eventName){
+    // A name is a succession of words separated with 
+    // any amount of whitespace [ \t] which shouldn't be compared.
+    // This function transforms each whitespace into one space character (' ')
+    size_t freePlaceToWrite = 0;
+    for (size_t i = 0; i < eventName.size(); i++) {
+        if (WHITESPACE.contains(eventName[i])) {
+            if (eventName[freePlaceToWrite] == ' ') {
+                continue;
+            }
+            else {
+                eventName[freePlaceToWrite] = ' ';
+                freePlaceToWrite++;
+            }
+            
+        }
+    } 
+    
+
+}
+
+void processLine(string_view line, int lineNum){
     trimLine(line);
-    cout << line << " " << isLastLine << " " << lineNum << endl;
+    cout << line << endl;
 
     // A new query.
     if (line.at(0) == '?') {
@@ -52,7 +83,24 @@ void processLine(string_view line, bool isLastLine, int lineNum){
 
     }
     else { // New data.
-        
+        static const regex pattern(R"(^([1-3])[ \t]+(\d{4,5})[ \t]+([a-zA-Z]+(?:[ \t]+[a-zA-Z]+)*)[ \t]+$)");    
+        match_results<string_view::const_iterator> matches;
+        if (regex_match(line.begin(), line.end(), matches, pattern)) {
+            string place = matches[1].str();
+            string year  = matches[2].str();
+            string name  = matches[3].str();
+            int yearInt  = stoi(year, 0, 10);
+            cout << yearInt<<" "<<name<<endl;
+            if (year.at(0) == '0' || !(yearInt >= 1800 && yearInt <= 59999)){
+                communicateError(lineNum);
+                return;
+            }
+            standarizeEventName(name);
+        }
+        else {
+            communicateError(lineNum);
+            return;
+        }
     }
 }
 
@@ -62,11 +110,9 @@ int main() {
     
     string currentLine;
     int lineNum = 0;
-    bool isLastLine = false;
 
     while (getline(cin, currentLine)) {
-        if (cin.peek() == EOF) isLastLine = true;
-        processLine (currentLine, isLastLine, ++lineNum);
+        processLine (currentLine, ++lineNum);
     }
 
     if (lineNum == 0){
