@@ -1,122 +1,215 @@
-/*  
-    dwie identyczne linijki liczymy podwojnie
-
-    Dwa ciągi słów oznaczają te same zawody, jeśli są to takie same ciągi słów. 
-    Odstępów między słowami nie porównujemy.
-
-    Słowo jest to niepusty napis zawierający niebiałe znaki.
-
-    Rok jest to słowo zawierające zapisaną przy podstawie 10 liczbę o wartości 
-    od 1800 do 59999, bez zer wiodących.
-
-    Odstęp jest to niepusty napis zawierający wyłącznie znaki spacji lub tabulatora
-
-    Zawody jest to niepusty ciąg kolejnych słów zawierających 
-    tylko duże lub małe litery alfabetu angielskiego, oddzielonych odstępami. 
-    
-    Linia jest to ciąg słów oddzielonych odstępami, 
-    zakończona znakiem nowej linii. Odstęp może też wystąpić na początku 
-    i na końcu linii.
-
-    Obsługę wejścia i wyjścia należy zrealizować za pomocą strumieni.
-
-    Dla każdej błędnej linii program wypisuje na standardowe wyjście 
-    diagnostyczne słowo ERROR, spację, numer błędnej linii oraz znak nowej linii. 
-    Linie są numerowane od 1. 
-    
-    Wyjątkiem jest ostatnia linia w danych wejściowych. 
-    Jeśli nie kończy się znakiem nowej linii, jest to poprawna linia.
-
-    Dwa ciągi słów oznaczają te same zawody, jeśli są to takie same ciągi słów. 
-    Odstępów między słowami nie porównujemy !!!
-
-*/
-
+// Author: Aliaksei Papkouski 484417 MIMUW
+#include <algorithm>
+#include <array>
+#include <charconv>
 #include <cstddef>
+#include <cstdint>
 #include <iostream>
-#include <string_view>
+#include <optional>
+#include <ranges>
 #include <regex>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <unordered_map>
 
-using namespace std; // TO BE DELETED
+namespace {
 
-const string WHITESPACE = " \t";   
+constexpr std::string_view WHITESPACE = " \t";
+constexpr std::size_t MEDAL_CATEGORIES_COUNT = 4;
+constexpr std::size_t ANY_MEDAL = 0;
+constexpr std::uint16_t ANY_YEAR = 0;
+constexpr std::string_view ANY_EVENT = "";
 
-inline void communicateError(int &lineNum) {
-    cerr << "ERROR " << lineNum << '\n';
+// Domain type aliases
+using Medal = std::size_t;      // 0 = (any medal), 1..3 = specific medal
+using Year = std::uint16_t;     // 0 = (any year), 1800..59999 = specific year
+using EventName = std::string;  // "" = (any event)
+
+// Data structure: Event -> Year -> Array of 4 medal counters [0..3]
+using MedalCounts = std::array<std::size_t, MEDAL_CATEGORIES_COUNT>;
+using YearMap = std::unordered_map<Year, MedalCounts>;
+using Database = std::unordered_map<EventName, YearMap>;
+
+// Represents parsed criteria from a single input line
+using Criteria = std::tuple<Medal, Year, EventName>;
+
+void communicateError(std::size_t lineNumber) {
+    std::cerr << "ERROR " << lineNumber << '\n';
 }
 
-inline void trimLine(string_view &line) {
-    line.remove_prefix(line.find_first_not_of(WHITESPACE));
-    // Notice: if a line contains only whitespace, then it won't get trimmed.
-}
-
-inline void standarizeEventName(string &eventName){
-    // A name is a succession of words separated with 
-    // any amount of whitespace [ \t] which shouldn't be compared.
-    // This function transforms each whitespace into one space character (' ')
-    size_t freePlaceToWrite = 0;
-    for (size_t i = 0; i < eventName.size(); i++) {
-        if (WHITESPACE.contains(eventName[i])) {
-            if (eventName[freePlaceToWrite] == ' ') {
-                continue;
-            }
-            else {
-                eventName[freePlaceToWrite] = ' ';
-                freePlaceToWrite++;
-            }
-            
-        }
-    } 
-    
-
-}
-
-void processLine(string_view line, int lineNum){
-    trimLine(line);
-    cout << line << endl;
-
-    // A new query.
-    if (line.at(0) == '?') {
-        line.remove_prefix(1);
-        trimLine(line);
-        // fetch info and check if correct
-
+void trimLeadingWhitespace(std::string_view &line) {
+    std::size_t position = line.find_first_not_of(WHITESPACE);
+    if (position == std::string_view::npos) {
+        line = {};
     }
-    else { // New data.
-        static const regex pattern(R"(^([1-3])[ \t]+(\d{4,5})[ \t]+([a-zA-Z]+(?:[ \t]+[a-zA-Z]+)*)[ \t]+$)");    
-        match_results<string_view::const_iterator> matches;
-        if (regex_match(line.begin(), line.end(), matches, pattern)) {
-            string place = matches[1].str();
-            string year  = matches[2].str();
-            string name  = matches[3].str();
-            int yearInt  = stoi(year, 0, 10);
-            cout << yearInt<<" "<<name<<endl;
-            if (year.at(0) == '0' || !(yearInt >= 1800 && yearInt <= 59999)){
-                communicateError(lineNum);
-                return;
+    else {
+        line.remove_prefix(position);
+    }
+}
+
+void standardizeEventName(EventName &eventName) {
+    std::ranges::replace(eventName, '\t', ' ');
+    auto [newEnd, end] = std::ranges::unique(eventName, [](char a, char b) {
+        return a == ' ' && b == ' ';
+    });
+    eventName.erase(newEnd, end);
+}
+
+bool matchesPrefix(
+    std::string_view line,
+    const std::regex &pattern,
+    std::match_results<std::string_view::const_iterator> &matches
+) {
+    return std::regex_search(line.begin(), line.end(), matches, pattern);
+}
+
+// Common token parser for both queries ('?') and data insertion lines.
+// Returns std::nullopt if the line contains invalid tokens,
+// glued words, or duplicate categories.
+std::optional<Criteria> extractCriteria(std::string_view line) {
+    // Positive lookahead (?=[ \t]|$) at the end of each regex guarantees
+    // that every token is followed by whitespace or the end of the line.
+    static const std::regex MEDAL_REGEX(R"(^[1-3](?=[ \t]|$))");
+    static const std::regex YEAR_REGEX(
+        R"(^(?:1[89]\d{2}|[2-9]\d{3}|[1-5]\d{4})(?=[ \t]|$))"
+    );
+    static const std::regex EVENT_NAME_REGEX(
+        R"(^[a-zA-Z]+(?:[ \t]+[a-zA-Z]+)*(?=[ \t]|$))"
+    );
+
+    Medal medal = ANY_MEDAL;
+    Year year = ANY_YEAR;
+    EventName eventName{ANY_EVENT};
+    std::match_results<std::string_view::const_iterator> matches;
+
+    while (true) {
+        trimLeadingWhitespace(line);
+        if (line.empty()) {
+            break;
+        }
+
+        if (matchesPrefix(line, MEDAL_REGEX, matches)) {
+            if (medal != ANY_MEDAL) {
+                return std::nullopt; // Duplicate medal criterion
             }
-            standarizeEventName(name);
+            medal = static_cast<Medal>(line.front() - '0');
+            line.remove_prefix(matches[0].length());
+        }
+        else if (matchesPrefix(line, YEAR_REGEX, matches)) {
+            if (year != ANY_YEAR) {
+                return std::nullopt; // Duplicate year criterion
+            }
+            std::size_t length = static_cast<std::size_t>(matches[0].length());
+            std::from_chars(line.data(), line.data() + length, year);
+            line.remove_prefix(length);
+        }
+        else if (matchesPrefix(line, EVENT_NAME_REGEX, matches)) {
+            if (!eventName.empty()) {
+                // Duplicate or split event name (e.g., "Olympic 1972 Games")
+                return std::nullopt;
+            }
+            eventName = matches[0].str();
+            standardizeEventName(eventName);
+            line.remove_prefix(matches[0].length());
         }
         else {
-            communicateError(lineNum);
+            return std::nullopt; // Unrecognized token (garbage in input)
+        }
+    }
+
+    return Criteria{medal, year, std::move(eventName)};
+}
+
+// Updates all 8 combinations in the data structure
+// (combining specific values and sentinels).
+void insertRecord(Database &database, const Criteria &criteria) {
+    const auto &[medal, year, eventName] = criteria;
+    const std::array<std::string_view, 2> eventKeys = {ANY_EVENT, eventName};
+    const std::array<Year, 2> yearKeys = {ANY_YEAR, year};
+
+    for (std::string_view eventKey : eventKeys) {
+        auto &yearMap = database[std::string(eventKey)];
+        for (Year yearKey : yearKeys) {
+            auto &medalArray = yearMap[yearKey];
+            ++medalArray[ANY_MEDAL];
+            ++medalArray[medal];
+        }
+    }
+}
+
+// Performs a read-only lookup via const reference to prevent accidental
+// insertion of empty keys by operator[].
+std::size_t queryDatabase(const Database &database, const Criteria &criteria) {
+    const auto &[medal, year, eventName] = criteria;
+
+    auto eventIt = database.find(eventName);
+    if (eventIt == database.end()) {
+        return 0;
+    }
+
+    const YearMap &yearMap = eventIt->second;
+    auto yearIt = yearMap.find(year);
+    if (yearIt == yearMap.end()) {
+        return 0;
+    }
+
+    return yearIt->second[medal];
+}
+
+void processLine(
+    std::string_view line,
+    std::size_t lineNumber,
+    Database &database
+) {
+    trimLeadingWhitespace(line);
+    if (line.empty()) {
+        communicateError(lineNumber);
+        return;
+    }
+
+    const bool isQuery = (line.front() == '?');
+    if (isQuery) {
+        line.remove_prefix(1);
+        // The '?' token must be followed by either EOL or whitespace
+        // (rejects e.g. "?1972" or "??").
+        if (!line.empty() && !WHITESPACE.contains(line.front())) {
+            communicateError(lineNumber);
             return;
         }
     }
+
+    auto criteriaOpt = extractCriteria(line);
+    if (!criteriaOpt.has_value()) {
+        communicateError(lineNumber);
+        return;
+    }
+
+    if (isQuery) {
+        std::cout << queryDatabase(database, *criteriaOpt) << '\n';
+    }
+    else {
+        const auto &[medal, year, eventName] = *criteriaOpt;
+        // All three criteria are mandatory when inserting a new medal record.
+        if (medal == ANY_MEDAL || year == ANY_YEAR || eventName.empty()) {
+            communicateError(lineNumber);
+            return;
+        }
+
+        insertRecord(database, *criteriaOpt);
+    }
 }
 
-
+} // namespace
 
 int main() {
-    
-    string currentLine;
-    int lineNum = 0;
+    Database database;
+    std::string currentLine;
+    std::size_t lineNumber = 0;
 
-    while (getline(cin, currentLine)) {
-        processLine (currentLine, ++lineNum);
+    while (std::getline(std::cin, currentLine)) {
+        processLine(currentLine, ++lineNumber, database);
     }
 
-    if (lineNum == 0){
-        // puste wejscie - co wtedy?
-        cerr << "Empty input.\n";
-    }
+    return 0;
 }
